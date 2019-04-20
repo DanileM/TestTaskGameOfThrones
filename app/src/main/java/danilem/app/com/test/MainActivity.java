@@ -2,25 +2,26 @@ package danilem.app.com.test;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-import com.google.android.gms.ads.AdRequest;
+import android.widget.Toast;
+
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 public class MainActivity extends Activity implements RewardedVideoAdListener {
 
-    RecyclerView recyclerView;
-    RewardedVideoAd mAd;
+    @BindView(R.id.rc_test) RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
 
         recyclerView = findViewById(R.id.rc_test);
@@ -30,23 +31,9 @@ public class MainActivity extends Activity implements RewardedVideoAdListener {
         TestAdapter adapter = new TestAdapter(this, Data.getModelList());
         recyclerView.setAdapter(adapter);
 
-        mAd = MobileAds.getRewardedVideoAdInstance(this);
-        mAd.setRewardedVideoAdListener(this);
-        loadRewardedVideoAd();
-    }
-
-    public void startVideoAdd(View view){
-        if(mAd.isLoaded())
-        {
-            mAd.show();
-        }
-    }
-
-    public void loadRewardedVideoAd() {
-        if(!mAd.isLoaded())
-        {
-            mAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
-        }
+        AdmobVideoRewardHelper.mAd = MobileAds.getRewardedVideoAdInstance(this);
+        AdmobVideoRewardHelper.mAd.setRewardedVideoAdListener(this);
+        AdmobVideoRewardHelper.loadRewardedVideoAd();
     }
 
     @Override
@@ -66,7 +53,7 @@ public class MainActivity extends Activity implements RewardedVideoAdListener {
 
     @Override
     public void onRewardedVideoAdClosed() {
-        loadRewardedVideoAd();
+        AdmobVideoRewardHelper.loadRewardedVideoAd();
     }
 
     @Override
@@ -86,24 +73,24 @@ public class MainActivity extends Activity implements RewardedVideoAdListener {
 
     @Override
     public void onRewardedVideoCompleted() {
-
+        Toast.makeText(this, "Спасибо!", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onResume() {
-        mAd.resume(this);
+        AdmobVideoRewardHelper.mAd.resume(this);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        mAd.pause(this);
+        AdmobVideoRewardHelper.mAd.pause(this);
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        mAd.destroy(this);
+        AdmobVideoRewardHelper.mAd.destroy(this);
         super.onDestroy();
     }
 }

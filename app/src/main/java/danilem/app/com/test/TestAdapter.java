@@ -1,8 +1,11 @@
 package danilem.app.com.test;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,43 +87,48 @@ public class TestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 ((InterlocutorMessageVH) viewHolder).date.setText(object.getDate());
                 break;
             case Model.ADVERTISING_INTEGRATION_TYPE:
+                ((AdvertisingIntegrationVH) viewHolder).button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(AdmobVideoRewardHelper.mAd.isLoaded())
+                        {
+                            AdmobVideoRewardHelper.mAd.show();
+                        }
+                    }
+                });
                 break;
         }
     }
 
 
-    private class YourMessageVH extends RecyclerView.ViewHolder{
-        ImageView image;
-        TextView message;
-        TextView date;
+    class YourMessageVH extends RecyclerView.ViewHolder{
+        @BindView(R.id.iv_your_image) ImageView image;
+        @BindView(R.id.tv_your_message) TextView message;
+        @BindView(R.id.tv_your_message_date) TextView date;
 
         private YourMessageVH(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.iv_your_image);
-            message = itemView.findViewById(R.id.tv_your_message);
-            date = itemView.findViewById(R.id.tv_your_message_date);
+            ButterKnife.bind(this, itemView);
         }
     }
 
-    private class InterlocutorMessageVH extends RecyclerView.ViewHolder{
-        ImageView image;
-        TextView message;
-        TextView date;
+    class InterlocutorMessageVH extends RecyclerView.ViewHolder{
+        @BindView(R.id.iv_interlocutor_image) ImageView image;
+        @BindView(R.id.tv_interlocutor_message) TextView message;
+        @BindView(R.id.tv_interlocutor_message_date) TextView date;
 
         private InterlocutorMessageVH(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.iv_interlocutor_image);
-            message = itemView.findViewById(R.id.tv_interlocutor_message);
-            date = itemView.findViewById(R.id.tv_interlocutor_message_date);
+            ButterKnife.bind(this, itemView);
         }
     }
 
-    private class AdvertisingIntegrationVH extends RecyclerView.ViewHolder{
-        Button button;
+    class AdvertisingIntegrationVH extends RecyclerView.ViewHolder{
+        @BindView(R.id.b_show_reward) Button button;
 
         private AdvertisingIntegrationVH(@NonNull View itemView) {
             super(itemView);
-            button = itemView.findViewById(R.id.b_show_reward);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

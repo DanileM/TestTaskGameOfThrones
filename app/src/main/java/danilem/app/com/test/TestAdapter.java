@@ -22,10 +22,12 @@ public class TestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
     private List<Model> listItems;
+    private AdmobVideoRewardHelper callback;
 
-    TestAdapter(Context context, List<Model> listItems){
+    TestAdapter(Context context, List<Model> listItems, MainActivity activity){
         this.context = context;
         this.listItems = listItems;
+        this.callback = activity;
     }
 
     @Override
@@ -90,10 +92,7 @@ public class TestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 ((AdvertisingIntegrationVH) viewHolder).button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(AdmobVideoRewardHelper.mAd.isLoaded())
-                        {
-                            AdmobVideoRewardHelper.mAd.show();
-                        }
+                        callback.showRewardedVideoAd();
                     }
                 });
                 break;

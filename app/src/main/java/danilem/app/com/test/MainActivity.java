@@ -9,11 +9,15 @@ import butterknife.ButterKnife;
 
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
-public class MainActivity extends Activity implements RewardedVideoAdListener {
+public class MainActivity extends Activity implements RewardedVideoAdListener, AdmobVideoRewardHelper {
+
+    RewardedVideoAd mAd;
 
     @BindView(R.id.rc_test) RecyclerView recyclerView;
 
@@ -28,12 +32,12 @@ public class MainActivity extends Activity implements RewardedVideoAdListener {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        TestAdapter adapter = new TestAdapter(this, Data.getModelList());
+        TestAdapter adapter = new TestAdapter(this, Data.getModelList(), this);
         recyclerView.setAdapter(adapter);
 
-        AdmobVideoRewardHelper.mAd = MobileAds.getRewardedVideoAdInstance(this);
-        AdmobVideoRewardHelper.mAd.setRewardedVideoAdListener(this);
-        AdmobVideoRewardHelper.loadRewardedVideoAd();
+        mAd = MobileAds.getRewardedVideoAdInstance(this);
+        mAd.setRewardedVideoAdListener(this);
+        loadRewardedVideoAd();
     }
 
     @Override
@@ -53,7 +57,7 @@ public class MainActivity extends Activity implements RewardedVideoAdListener {
 
     @Override
     public void onRewardedVideoAdClosed() {
-        AdmobVideoRewardHelper.loadRewardedVideoAd();
+        loadRewardedVideoAd();
     }
 
     @Override
@@ -78,19 +82,33 @@ public class MainActivity extends Activity implements RewardedVideoAdListener {
 
     @Override
     public void onResume() {
-        AdmobVideoRewardHelper.mAd.resume(this);
+        mAd.resume(this);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        AdmobVideoRewardHelper.mAd.pause(this);
+        mAd.pause(this);
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        AdmobVideoRewardHelper.mAd.destroy(this);
+        mAd.destroy(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void loadRewardedVideoAd() {
+        if(!mAd.isLoaded()){
+            mAd.loadAd("ca-app-pub-3940256099942544/5224354917", new AdRequest.Builder().build());
+        }
+    }
+
+    @Override
+    public void showRewardedVideoAd() {
+        if(mAd.isLoaded()){
+            mAd.show();
+        }
     }
 }

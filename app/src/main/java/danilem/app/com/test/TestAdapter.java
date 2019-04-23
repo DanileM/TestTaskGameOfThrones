@@ -24,10 +24,10 @@ public class TestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<Model> listItems;
     private AdmobVideoRewardHelper callback;
 
-    TestAdapter(Context context, List<Model> listItems, MainActivity activity){
+    TestAdapter(Context context, List<Model> listItems, AdmobVideoRewardHelper callback){
         this.context = context;
         this.listItems = listItems;
-        this.callback = activity;
+        this.callback = callback;
     }
 
     @Override
